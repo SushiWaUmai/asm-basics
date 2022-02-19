@@ -1,3 +1,3 @@
 # Assembly Basics
 
-Simple Programs write in Linux Intel x64 Assembly.
+Simple Programs written in Linux Intel x64 Assembly.
