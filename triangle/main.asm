@@ -35,7 +35,7 @@ print_triangle:
     for_print_triangle:
         inc     r10
 
-        call print_row
+        call    print_row
 
         cmp     r10, 10
         jl      for_print_triangle
