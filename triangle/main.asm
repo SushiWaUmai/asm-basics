@@ -1,56 +1,54 @@
-section .data
-star    db "*"; star
-new_line db 10      ; \n
-
 section .text
-global  _start
+global _start
 
 _start:
-	xor r11, r11; set the r11 counter to 0
+    jmp main
 
-	call loop1
-	call end
+print_char:
+    mov     rax, 1
+    mov     rdi, 1
+    mov     rdx, 1
+    syscall
+    ret
 
-loop1:
-	mov rax, 1; system call of 1 is write
-	mov rdi, 1; set output stream to stdout
-	mov rsi, star; set adress of the string to *
-	mov rdx, 1; add length of string
+print_row:
+    push    rbp
+    xor     rbp, rbp
 
-	xor  rcx, rcx; set rcx counter to 0
-	call loop2; call the inner loop
+    for_print_row:
+        mov     rsi, star
+        call    print_char
 
-	mov rax, 1; system call of 1 is write
-	mov rdi, 1; set output stream to stdout
-	mov rsi, new_line; set adress of the string to \n
-	mov rdx, 1; add string
+        inc     rbp
+        cmp     rbp, r10
+        jl      for_print_row
 
-	push r11; push r11 before syscall
-	syscall
-	pop  r11; pop r11 after syscall
+    mov     rsi, newline
+    call    print_char
 
-	inc r11; increment r11 by 1
-	cmp r11, 100; if the r11 counter is less than 5
-	jl  loop1; jump to loop1
-	ret
+    pop     rbp
+    ret
 
-loop2:
-	;    push all persistent registers before syscall
-	push rcx
-	push r11
+print_triangle:
+    xor     r10, r10
 
-	syscall
+    for_print_triangle:
+        inc     r10
 
-	;   pop all persistent registers after syscall
-	pop r11
-	pop rcx
+        call print_row
 
-	inc rcx; increment counter by 1
-	cmp rcx, r11; if the counter is less than 4
-	jle loop2; jump to loop2
-	ret
+        cmp     r10, 10
+        jl      for_print_triangle
 
-end:
-	mov rax, 60; system call for exit
-	mov rdi, 0; exit code 0
-	syscall
+    ret
+
+main:
+    call    print_triangle
+
+    mov     rax, 60
+    mov     rdi, 0
+    syscall
+
+section .data
+    star    db "*"
+    newline db 10
